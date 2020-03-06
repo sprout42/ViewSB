@@ -92,6 +92,8 @@ class PhyWhispererBackend(ViewSBBackend):
                 help="read captured data in a single burst")
         parser.add_argument('--timeout', type=int, default=5,
                 help="capture timeout in seconds")
+        parser.add_argument('--power-source', choices=['host', '5V', 'none'], default='host',
+                help="target power method")
         args, leftover_args = parser.parse_known_args()
 
 
@@ -149,6 +151,7 @@ class PhyWhispererBackend(ViewSBBackend):
         # TODO: provide here an offline mode where we don't connect the device and instead
         # call a variant of run_capture which reads from a file instead
         self.pw_device.con(program_fpga=True)
+        self.pw_device.set_power_source(args.power_source)
 
         try:
             halt_callback = lambda _ : self.termination_event.is_set()
